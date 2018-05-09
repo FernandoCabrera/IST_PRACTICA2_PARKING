@@ -20,8 +20,8 @@
 			type: 'POST',
 			contentType: "application/json",
 		    data: JSON.stringify({parkingId:$('#parkingId').val(),matricula:$('#matricula').val()}),
-		    success: function(){alert('Los datos se han recibido con éxito');},
-		    error: function(){alert('Error en el envío de los datos');}
+		   // success: function(){alert('Los datos se han recibido con éxito');},
+		   // error: function(){alert('Error en el envío de los datos');}
 		});
 		evento.preventDefault(); //Evita que se ejecute la petición GET del form
 	})
