@@ -9,5 +9,7 @@ public interface DAOParkingInterfaz {
 	public void addCoche(DTOParking park);
 	public void updateCoche(DTOParking park);
 	public DTOParking buscaIdpark(int id);
+	public DTOParking tsalida(String mat);
+	public DTOParking tentrada(String mat);
 	
 }

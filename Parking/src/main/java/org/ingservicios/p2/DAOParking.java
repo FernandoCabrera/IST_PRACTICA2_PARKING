@@ -62,6 +62,24 @@ public class DAOParking implements DAOParkingInterfaz {
 			if (park.isEmpty()) return null;
 			else return park.get(0);
 			}
+		//buscar matricula salida 
+		public DTOParking tsalida(String mat){ //Devuelve el coche buscado o null si no existe
+			String sql = "select TimeStamp from parking where Matricula= ? and ParkingId=1";
+			Object[ ] parametros = {mat}; //Array de objetos
+			ParkingMapper mapper = new ParkingMapper();
+			List<DTOParking> park = this.jdbcTemplate.query(sql, parametros, mapper);
+			if (park.isEmpty()) return null;
+			else return park.get(0);
+			}
+		//buscar matricula entrada 
+				public DTOParking tentrada(String mat){ //Devuelve el coche buscado o null si no existe
+					String sql = "select TimeStamp from parking where Matricula= ? and ParkingId=0";
+					Object[ ] parametros = {mat}; //Array de objetos
+					ParkingMapper mapper = new ParkingMapper();
+					List<DTOParking> park = this.jdbcTemplate.query(sql, parametros, mapper);
+					if (park.isEmpty()) return null;
+					else return park.get(0);
+					}
 		
 }
 

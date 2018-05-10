@@ -56,11 +56,8 @@ será formateado automáticamente en JSON
   */
 	//PathVariable solo se usa cuando se añade algo en la url
 	 @RequestMapping(method=RequestMethod.POST, value="/registroMatricula/enviar")
-	public ResponseEntity< DTOParking> registroMatricula(@RequestBody DTOParking park ) {
-//		public ResponseEntity< DTOParking> registroMatricula(@RequestBody DTO coche) {
-	    System.out.println("Dentro de servicio");
-		//Obtenemos fecha
-		//Timestamp date = (Timestamp) new Date();
+	public String registroMatricula(@RequestBody DTOParking park ) {
+		String url="testparking";
 	    //1 entrada
 	if(dao.buscaMatricula(park.getMatricula())==null && dao.buscaIdpark(park.getParkingId())==null)	{
 	//	DTOParking park =  new DTOParking();
@@ -68,7 +65,7 @@ será formateado automáticamente en JSON
 		//Salida 1
 	}else if(dao.buscaMatricula(park.getMatricula())!=null && park.getParkingId()==1&& dao.buscaIdpark(park.getParkingId())==null) {
 			dao.addCoche(park);//añadimos a la bbdd	
-			//url="";
+			url="testcoste";
 			//otra entrada
 		}else if(dao.buscaMatricula(park.getMatricula())!=null && dao.buscaIdpark(park.getParkingId())!=null && park.getParkingId()==0) {
 			dao.updateCoche(park);
@@ -76,16 +73,32 @@ será formateado automáticamente en JSON
 		}else {
 			
 			dao.updateCoche(park);
-			//url="";
+			url="testcoste";
 			
 		}
+		ResponseEntity<DTOParking> resp=new ResponseEntity <DTOParking> (park,HttpStatus.CREATED);
 		
 		
 		
 		
-		
-        return new ResponseEntity<DTOParking>(park,HttpStatus.CREATED);
+        return url;
 	
 	}
+	 
+	 
+	 //PARTE OPCIONAL
+	// coste/{matricula} 
+@RequestMapping(value="coste/{matricula}",method=RequestMethod.GET)
+public @ResponseBody long coste(@PathVariable (value="matricula")String matricula) {
+	
+	//Timestamp tsalida = dao.tsalida(matricula);
+	//Timestamp tentrada = dao.tentrada(matricula);//obtener bbdd
+	long tiempo=0;
+	//tiempo=((tsalida.getTime()-tentrada.getTime())/1000) ;
+	long Tarifa=(long) 0.3456;
+	long coste= tiempo * Tarifa ;
+	
+	return coste;
+}
 	
 }
