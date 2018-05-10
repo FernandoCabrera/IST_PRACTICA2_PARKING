@@ -54,6 +54,7 @@ asociado al @RequestMapping se incorpora la etiqueta @ResponseBody.
 Además, el método no devuelve un String, sino un objeto de otro tipo que
 será formateado automáticamente en JSON
   */
+	
 	//PathVariable solo se usa cuando se añade algo en la url
 	 @RequestMapping(method=RequestMethod.POST, value="/registroMatricula/enviar")
 	public String registroMatricula(@RequestBody DTOParking park ) {
