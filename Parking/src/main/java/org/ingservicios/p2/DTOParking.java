@@ -6,14 +6,14 @@ import java.sql.Timestamp;
 public class DTOParking implements Serializable {
 //Datos de nuestra tabla
 	
-	private int parkingid;//identificador barrera 0-entrada 1-salida
+	private int parkingId;//identificador barrera 0-entrada 1-salida
 	private String matricula;
 	private Timestamp fecha;
 	
 	
 public DTOParking() {
 		
-		this.parkingid = 0;
+		this.parkingId = 0;
 		this.matricula = "";
 		this.fecha = null;
 	}
@@ -21,19 +21,19 @@ public DTOParking() {
 
 	public DTOParking(int parkingid, String matricula, Timestamp fecha) {
 		
-		this.parkingid = parkingid;
+		this.parkingId = parkingid;
 		this.matricula = matricula;
 		this.fecha = fecha;
 	}
 
 
-	public int getParkingid() {
-		return parkingid;
+	public int getParkingId() {
+		return parkingId;
 	}
 
 
-	public void setParkingid(int parkingid) {
-		this.parkingid = parkingid;
+	public void setParkingId(int parkingid) {
+		this.parkingId = parkingid;
 	}
 
 

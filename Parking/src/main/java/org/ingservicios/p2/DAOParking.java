@@ -41,13 +41,27 @@ public class DAOParking implements DAOParkingInterfaz {
 		
 		//Añadir parking, en jdbcTemplate se utiliza ??
 		public void addCoche(DTOParking park) {			
-			String sql = "insert into parking values(?,?,?)";
-			Object[ ] parametros = {park.getParkingid(),park.getMatricula(),park.getFecha()}; //Array de objetos
+			String sql = "insert into parking(ParkingId,Matricula) values(?,?)";
+			Object[ ] parametros = {park.getParkingId(),park.getMatricula()}; //Array de objetos
+			//Para operaciones INSERT, UPDATE o DELETE se usa el método jdbcTemplate.update
+			this.jdbcTemplate.update(sql,parametros);
+		}
+		public void updateCoche(DTOParking park){
+			String sql = "update parking SET ParkingId = ?, Matricula = ?";
+			
+			Object[ ] parametros = {park.getParkingId(),park.getMatricula()}; //Array de objetos
 			//Para operaciones INSERT, UPDATE o DELETE se usa el método jdbcTemplate.update
 			this.jdbcTemplate.update(sql,parametros);
 		}
 		
-		
+		public DTOParking buscaIdpark(int id){ //Devuelve el coche buscado o null si no existe
+			String sql = "select * from parking where ParkingId= ?";
+			Object[ ] parametros = {id}; //Array de objetos
+			ParkingMapper mapper = new ParkingMapper();
+			List<DTOParking> park = this.jdbcTemplate.query(sql, parametros, mapper);
+			if (park.isEmpty()) return null;
+			else return park.get(0);
+			}
 		
 }
 

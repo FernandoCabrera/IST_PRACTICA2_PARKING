@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Handles requests for the application home page.
@@ -54,18 +54,37 @@ asociado al @RequestMapping se incorpora la etiqueta @ResponseBody.
 Además, el método no devuelve un String, sino un objeto de otro tipo que
 será formateado automáticamente en JSON
   */
-	 @RequestMapping(method=RequestMethod.POST, value="/registroMatricula")
-	public ResponseEntity<DTOParking> insertarcoche(@PathVariable(value="parkingId")int parkingId,@PathVariable(value="matricula")String matricula,
-	                                               @RequestBody DTOParking park) {
-
-	
+	//PathVariable solo se usa cuando se añade algo en la url
+	 @RequestMapping(method=RequestMethod.POST, value="/registroMatricula/enviar")
+	public ResponseEntity< DTOParking> registroMatricula(@RequestBody DTOParking park ) {
+//		public ResponseEntity< DTOParking> registroMatricula(@RequestBody DTO coche) {
+	    System.out.println("Dentro de servicio");
 		//Obtenemos fecha
-		Timestamp date = (Timestamp) new Date();
-		DTOParking parking= new DTOParking(parkingId,matricula,date);
+		//Timestamp date = (Timestamp) new Date();
+	    //1 entrada
+	if(dao.buscaMatricula(park.getMatricula())==null && dao.buscaIdpark(park.getParkingId())==null)	{
+	//	DTOParking park =  new DTOParking();
+		dao.addCoche(park);//añadimos a la bbdd
+		//Salida 1
+	}else if(dao.buscaMatricula(park.getMatricula())!=null && park.getParkingId()==1&& dao.buscaIdpark(park.getParkingId())==null) {
+			dao.addCoche(park);//añadimos a la bbdd	
+			//url="";
+			//otra entrada
+		}else if(dao.buscaMatricula(park.getMatricula())!=null && dao.buscaIdpark(park.getParkingId())!=null && park.getParkingId()==0) {
+			dao.updateCoche(park);
+			//otra salida
+		}else {
+			
+			dao.updateCoche(park);
+			//url="";
+			
+		}
 		
-		dao.addCoche(parking);//añadimos a la bbdd
-	
-        return new ResponseEntity<DTOParking>(parking,HttpStatus.CREATED);
+		
+		
+		
+		
+        return new ResponseEntity<DTOParking>(park,HttpStatus.CREATED);
 	
 	}
 	
