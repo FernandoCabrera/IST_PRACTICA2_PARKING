@@ -1,5 +1,6 @@
 package org.ingservicios.p2;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 
@@ -9,7 +10,7 @@ public interface DAOParkingInterfaz {
 	public void addCoche(DTOParking park);
 	public void updateCoche(DTOParking park);
 	public DTOParking buscaIdpark(int id);
-	public DTOParking tsalida(String mat);
-	public DTOParking tentrada(String mat);
+	public Timestamp tsalida(String mat);
+	public Timestamp tentrada(String mat);
 	
 }

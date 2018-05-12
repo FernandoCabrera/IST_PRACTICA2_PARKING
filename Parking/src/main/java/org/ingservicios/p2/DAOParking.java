@@ -1,6 +1,8 @@
 package org.ingservicios.p2;
 
 
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.List;
 import javax.sql.DataSource;
 
@@ -47,9 +49,11 @@ public class DAOParking implements DAOParkingInterfaz {
 			this.jdbcTemplate.update(sql,parametros);
 		}
 		public void updateCoche(DTOParking park){
-			String sql = "update parking SET ParkingId = ?, Matricula = ?";
-			
-			Object[ ] parametros = {park.getParkingId(),park.getMatricula()}; //Array de objetos
+			String sql = "update parking SET ParkingId = ?, Matricula = ? ,TimeStamp =? where ParkingId=?";
+			//Obtenemos fecha actual
+			Calendar calendar = Calendar.getInstance ();
+			Timestamp currentTimestamp = new java.sql.Timestamp (calendar.getTime (). getTime ());
+			Object[ ] parametros = {park.getParkingId(),park.getMatricula(),currentTimestamp,park.getParkingId()}; //Array de objetos
 			//Para operaciones INSERT, UPDATE o DELETE se usa el método jdbcTemplate.update
 			this.jdbcTemplate.update(sql,parametros);
 		}
@@ -63,22 +67,22 @@ public class DAOParking implements DAOParkingInterfaz {
 			else return park.get(0);
 			}
 		//buscar matricula salida 
-		public DTOParking tsalida(String mat){ //Devuelve el coche buscado o null si no existe
+		public Timestamp tsalida(String mat){ //Devuelve el coche buscado o null si no existe
 			String sql = "select TimeStamp from parking where Matricula= ? and ParkingId=1";
 			Object[ ] parametros = {mat}; //Array de objetos
 			ParkingMapper mapper = new ParkingMapper();
-			List<DTOParking> park = this.jdbcTemplate.query(sql, parametros, mapper);
-			if (park.isEmpty()) return null;
-			else return park.get(0);
+			DTOParking park = (DTOParking) this.jdbcTemplate.query(sql, parametros, mapper);
+			if (park==null) return null;
+			else return park.getFecha();
 			}
 		//buscar matricula entrada 
-				public DTOParking tentrada(String mat){ //Devuelve el coche buscado o null si no existe
+				public Timestamp tentrada(String mat){ //Devuelve el coche buscado o null si no existe
 					String sql = "select TimeStamp from parking where Matricula= ? and ParkingId=0";
 					Object[ ] parametros = {mat}; //Array de objetos
 					ParkingMapper mapper = new ParkingMapper();
-					List<DTOParking> park = this.jdbcTemplate.query(sql, parametros, mapper);
-					if (park.isEmpty()) return null;
-					else return park.get(0);
+					DTOParking park = (DTOParking) this.jdbcTemplate.query(sql, parametros, mapper);
+					if (park==null) return null;
+					else return park.getFecha();
 					}
 		
 }

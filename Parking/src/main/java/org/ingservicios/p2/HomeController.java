@@ -57,49 +57,81 @@ será formateado automáticamente en JSON
 	
 	//PathVariable solo se usa cuando se añade algo en la url
 	 @RequestMapping(method=RequestMethod.POST, value="/registroMatricula/enviar")
-	public String registroMatricula(@RequestBody DTOParking park ) {
-		String url="testparking";
+	public boolean registroMatricula(@RequestBody DTOParking park ) {
+		boolean resul=false;
 	    //1 entrada
-	if(dao.buscaMatricula(park.getMatricula())==null && dao.buscaIdpark(park.getParkingId())==null)	{
+	if(dao.buscaMatricula(park.getMatricula())==null && dao.buscaIdpark(0)==null)	{
 	//	DTOParking park =  new DTOParking();
 		dao.addCoche(park);//añadimos a la bbdd
+		resul=true;
+		
 		//Salida 1
-	}else if(dao.buscaMatricula(park.getMatricula())!=null && park.getParkingId()==1&& dao.buscaIdpark(park.getParkingId())==null) {
+	}else if(dao.buscaMatricula(park.getMatricula())!=null && park.getParkingId()==1 && dao.buscaIdpark(park.getParkingId())==null) {
 			dao.addCoche(park);//añadimos a la bbdd	
-			url="testcoste";
+			resul=true;
 			//otra entrada
-		}else if(dao.buscaMatricula(park.getMatricula())!=null && dao.buscaIdpark(park.getParkingId())!=null && park.getParkingId()==0) {
+		}else if(dao.buscaMatricula(park.getMatricula())!=null  && dao.buscaIdpark(park.getParkingId())!=null && park.getParkingId()==0) {
+			//bbdd no actualiza la hora, lo hacemos en el update
 			dao.updateCoche(park);
+			
+			resul=true;
+			
 			//otra salida
 		}else {
 			
 			dao.updateCoche(park);
-			url="testcoste";
+			resul=true;
 			
 		}
-		ResponseEntity<DTOParking> resp=new ResponseEntity <DTOParking> (park,HttpStatus.CREATED);
+		//ResponseEntity<DTOParking> resp=new ResponseEntity <DTOParking> (park,HttpStatus.CREATED);
 		
 		
 		
 		
-        return url;
+        return resul;
 	
 	}
-	 
-	 
+	//Mostrar jsp pago 
+	 @RequestMapping(value = "/Pago", method = {RequestMethod.POST,RequestMethod.GET})
+		public String mostrarPago (HttpServletRequest request,Model model) {
+			
+				String url="testcoste";
+			
+			return url;
+			
+		} 
 	 //PARTE OPCIONAL
 	// coste/{matricula} 
-@RequestMapping(value="coste/{matricula}",method=RequestMethod.GET)
-public @ResponseBody long coste(@PathVariable (value="matricula")String matricula) {
+
+@RequestMapping(value="coste/{matricula}",method= RequestMethod.GET)
+public @ResponseBody String coste(@PathVariable (value="matricula")String matricula,Model model) {
+	String precio="";
 	
-	//Timestamp tsalida = dao.tsalida(matricula);
-	//Timestamp tentrada = dao.tentrada(matricula);//obtener bbdd
-	long tiempo=0;
-	//tiempo=((tsalida.getTime()-tentrada.getTime())/1000) ;
-	long Tarifa=(long) 0.3456;
-	long coste= tiempo * Tarifa ;
+	//Buscamos la matricula en BDDD
+	if(dao.buscaMatricula(matricula)!=null) {
+		//obtenemos el tiempo de entrada y salida 
+		Timestamp tsalida = dao.tsalida(matricula);
+		Timestamp tentrada = dao.tentrada(matricula);//obtener bbdd
+		
+		Date fsalida=tsalida;
+		//comparamos aque el tiempo de entrada ni salida sea nulo
+		//y que tsalida sea mayor que tiempo de entrada
+		//if(tsalida!=null && tentrada!=null && tsalida.before(tentrada)) {
+		
+		long tiempo=((tsalida.getTime()-tentrada.getTime())/1000) ;
+		long Tarifa=(long) 0.3456;
+		long coste= tiempo * Tarifa ;
 	
-	return coste;
+        model.addAttribute("cos",coste) ;
+	   
+		
+	
+		//}
+ precio= new Long (coste) .toString ();
 }
-	
+	return precio;
+}
+
+
+
 }
