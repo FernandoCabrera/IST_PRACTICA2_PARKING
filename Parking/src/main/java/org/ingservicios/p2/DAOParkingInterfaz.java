@@ -10,7 +10,8 @@ public interface DAOParkingInterfaz {
 	public void addCoche(DTOParking park);
 	public void updateCoche(DTOParking park);
 	public DTOParking buscaIdpark(int id);
-	public Timestamp tsalida(String mat);
-	public Timestamp tentrada(String mat);
+	public Timestamp tsalida(String matricula, int parkingID);
+	public Timestamp tentrada(String matricula, int parkingID);
+	public DTOParking buscaIdpark(int id,String matricula);
 	
 }

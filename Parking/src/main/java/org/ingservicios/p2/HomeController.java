@@ -1,6 +1,8 @@
 package org.ingservicios.p2;
 
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -13,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -57,38 +60,40 @@ será formateado automáticamente en JSON
 	
 	//PathVariable solo se usa cuando se añade algo en la url
 	 @RequestMapping(method=RequestMethod.POST, value="/registroMatricula/enviar")
-	public boolean registroMatricula(@RequestBody DTOParking park ) {
-		boolean resul=false;
+	public ResponseEntity <DTOParking> registroMatricula(@RequestBody DTOParking park ) {
+		
+		
+		
 	    //1 entrada
-	if(dao.buscaMatricula(park.getMatricula())==null && dao.buscaIdpark(0)==null)	{
+	if(dao.buscaMatricula(park.getMatricula())==null && park.getParkingId()==0)	{
 	//	DTOParking park =  new DTOParking();
 		dao.addCoche(park);//añadimos a la bbdd
-		resul=true;
 		
 		//Salida 1
-	}else if(dao.buscaMatricula(park.getMatricula())!=null && park.getParkingId()==1 && dao.buscaIdpark(park.getParkingId())==null) {
+	}else if(dao.buscaMatricula(park.getMatricula())!=null && park.getParkingId()==1 && dao.buscaIdpark(park.getParkingId(),park.getMatricula())==null) {
 			dao.addCoche(park);//añadimos a la bbdd	
-			resul=true;
+			
 			//otra entrada
 		}else if(dao.buscaMatricula(park.getMatricula())!=null  && dao.buscaIdpark(park.getParkingId())!=null && park.getParkingId()==0) {
 			//bbdd no actualiza la hora, lo hacemos en el update
 			dao.updateCoche(park);
-			
-			resul=true;
-			
+		
 			//otra salida
 		}else {
 			
 			dao.updateCoche(park);
-			resul=true;
+			
 			
 		}
-		//ResponseEntity<DTOParking> resp=new ResponseEntity <DTOParking> (park,HttpStatus.CREATED);
+	
+
+	
+		ResponseEntity<DTOParking> resp=new ResponseEntity <DTOParking>(park, HttpStatus.CREATED);
 		
 		
 		
 		
-        return resul;
+        return resp;
 	
 	}
 	//Mostrar jsp pago 
@@ -110,26 +115,37 @@ public @ResponseBody String coste(@PathVariable (value="matricula")String matric
 	//Buscamos la matricula en BDDD
 	if(dao.buscaMatricula(matricula)!=null) {
 		//obtenemos el tiempo de entrada y salida 
-		Timestamp tsalida = dao.tsalida(matricula);
-		Timestamp tentrada = dao.tentrada(matricula);//obtener bbdd
+ 		Timestamp tentrada = dao.tentrada(matricula, dao.buscaIdpark(0).getParkingId());
+ 		Timestamp tsalida = dao.tsalida(matricula, dao.buscaIdpark(1).getParkingId());
 		
-		Date fsalida=tsalida;
+		
 		//comparamos aque el tiempo de entrada ni salida sea nulo
 		//y que tsalida sea mayor que tiempo de entrada
-		//if(tsalida!=null && tentrada!=null && tsalida.before(tentrada)) {
-		
-		long tiempo=((tsalida.getTime()-tentrada.getTime())/1000) ;
-		long Tarifa=(long) 0.3456;
-		long coste= tiempo * Tarifa ;
-	
-        model.addAttribute("cos",coste) ;
-	   
-		
-	
-		//}
- precio= new Long (coste) .toString ();
-}
-	return precio;
+		if(tsalida!=null && tentrada!=null && tsalida.before(tentrada)) {
+ 		
+ 		double tiempo = (((tsalida.getTime()-tentrada.getTime())/1000)/60);
+ 		System.out.println("Minutos de estancia: "+ tiempo);
+ 		
+ 		double Tarifa= 0.01;
+ 		//Coste en Euros por minuto
+ 		double coste= tiempo * Tarifa;
+ 		precio = Double.toString(coste);
+ 		
+		}else {
+			double coste=0;
+
+ 	 		precio = Double.toString(coste);
+		}
+
+ 		}else {
+ 			double coste=0;
+
+ 	 		precio = Double.toString(coste);
+ 		}
+ 
+ 	
+
+return precio;
 }
 
 

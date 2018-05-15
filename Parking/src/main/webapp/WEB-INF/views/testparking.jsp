@@ -24,7 +24,13 @@
 		   error: function(){alert('Error en el envío de los datos');}
 		});
 		evento.preventDefault(); //Evita que se ejecute la petición GET del form
-	})
+		
+	}
+	//if(parkingId==1){
+	//	window.location.href = "http://localhost:8080/p2/Pago"
+		
+	//}
+	)
 </script>
 
 </body>
