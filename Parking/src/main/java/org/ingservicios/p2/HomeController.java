@@ -119,14 +119,10 @@ public @ResponseBody String coste(@PathVariable (value="matricula")String matric
  		Timestamp tsalida = dao.tsalida(matricula, dao.buscaIdpark(1).getParkingId());
 		
 		
-		//comparamos aque el tiempo de entrada ni salida sea nulo
-		//y que tsalida sea mayor que tiempo de entrada
-		if(tsalida!=null && tentrada!=null && tsalida.before(tentrada)) {
- 		
  		double tiempo = (((tsalida.getTime()-tentrada.getTime())/1000)/60);
  		System.out.println("Minutos de estancia: "+ tiempo);
  		
- 		double Tarifa= 0.01;
+ 		double Tarifa= 0.11;
  		//Coste en Euros por minuto
  		double coste= tiempo * Tarifa;
  		precio = Double.toString(coste);
@@ -137,12 +133,7 @@ public @ResponseBody String coste(@PathVariable (value="matricula")String matric
  	 		precio = Double.toString(coste);
 		}
 
- 		}else {
- 			double coste=0;
-
- 	 		precio = Double.toString(coste);
- 		}
- 
+ 		
  	
 
 return precio;
